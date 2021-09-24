@@ -37,6 +37,7 @@ if __name__ == '__main__':
     query += "ORDER BY creation_date LIMIT 1"
     longitude, latitude, date = pd.read_sql(query, postgre_SQL_connection).loc[
         0, ['longitude', 'latitude', 'creation_date']]
+
     print("Task 3")
     print(f"satellite_id: {satellite_id}, datetime: {date}")
     print(f"Longitude: {longitude}, latitude: {latitude}")
@@ -61,5 +62,6 @@ if __name__ == '__main__':
         distance_list.append(Utils.calc_distance(row['longitude'], row['latitude'], given_position['longitude'],
                                                  given_position['latitude']))
     data_df['distance'] = distance_list
+
     print("Task 4")
     print(data_df[data_df.distance == data_df.distance.min()])

@@ -15,6 +15,8 @@ _*Note:*_ you can check Postgres container IP address by running the following c
     
     docker ps <container_id> | grep IPAddress
 
+    default IPAddress is 172.18.0.3
+
 - Run the script
     
       python main.py
