@@ -1,0 +1,57 @@
+from sqlalchemy import create_engine
+import json
+from helper.base import Utils
+import pandas as pd
+
+if __name__ == '__main__':
+
+    # given condition for querying
+    satellite_id = '5fbfecce54ceb10a5664c80a'
+    date_time = "2021-01-26T06:26:10"
+
+    # db instance
+    alchemy_engine = create_engine('postgresql+psycopg2://postgres:changeme@172.18.0.3/postgres', pool_recycle=3600)
+    postgre_SQL_connection = alchemy_engine.connect()
+
+    # read json file
+    with open("starlink_historical_data.json", 'r') as file:
+        json_data = json.load(file)
+
+    # loading data into db
+    # Task 2
+    Utils.load_db(connection=postgre_SQL_connection, df=Utils.read_data(json_data))
+
+    # Task 3  without cleaning db
+    # by sql alchemy
+    query = f"SELECT * FROM starlink_satellite WHERE satellite_id='{satellite_id}' "
+    if date_time is not None:
+        query += f"AND creation_date='{Utils.iso_8061_to_timestamp(date_time)}'::timestamptz "
+    query += "ORDER BY creation_date LIMIT 1"
+    longitude, latitude, date = pd.read_sql(query, postgre_SQL_connection).loc[
+        0, ['longitude', 'latitude', 'creation_date']]
+    print("Task 3")
+    print(f"satellite_id: {satellite_id}, datetime: {date}")
+    print(f"Longitude: {longitude}, latitude: {latitude}")
+
+    # Task 4
+    # given position and datetime
+    given_position = {
+        'longitude': 100,
+        'latitude': 100
+    }
+    date_time = "2021-01-26T06:26:10"
+
+    query = f"SELECT * FROM starlink_satellite "
+    if date_time is not None:
+        query += f"WHERE creation_date='{Utils.iso_8061_to_timestamp(date_time)}'::timestamptz"
+
+    data_df = pd.read_sql(query, postgre_SQL_connection)
+
+    data_df = data_df.dropna()
+    distance_list = []
+    for row in data_df.iloc():
+        distance_list.append(Utils.calc_distance(row['longitude'], row['latitude'], given_position['longitude'],
+                                                 given_position['latitude']))
+    data_df['distance'] = distance_list
+    print("Task 4")
+    print(data_df[data_df.distance == data_df.distance.min()])
