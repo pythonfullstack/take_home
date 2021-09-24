@@ -9,8 +9,10 @@ from helper.base import Utils
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Input querying parameters.")
 
-    parser.add_argument('--id', default="5fbfecce54ceb10a5664c80a", help="satellite id")
-    parser.add_argument('--datetime', default="2021-01-26T06:26:10", help="datetime")
+    parser.add_argument('--id', default="5fbfecce54ceb10a5664c80a", help="satellite id", type=str)
+    parser.add_argument('--datetime', default="2021-01-26T06:26:10", help="datetime", type=str)
+    parser.add_argument('--longitude', default=100, help="longitude", type=int)
+    parser.add_argument('--latitude', default=100, help="latitude", type=int)
     query_param = vars(parser.parse_args())
 
     # given condition for querying
@@ -45,8 +47,8 @@ if __name__ == '__main__':
     # Task 4
     # given position and datetime
     given_position = {
-        'longitude': 100,
-        'latitude': 100
+        'longitude': query_param['longitude'],
+        'latitude': query_param['latitude']
     }
     date_time = "2021-01-26T06:26:10"
 
