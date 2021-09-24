@@ -1,13 +1,21 @@
-from sqlalchemy import create_engine
+import argparse
 import json
-from helper.base import Utils
+
 import pandas as pd
+from sqlalchemy import create_engine
+
+from helper.base import Utils
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Input querying parameters.")
+
+    parser.add_argument('--id', default="5fbfecce54ceb10a5664c80a", help="satellite id")
+    parser.add_argument('--datetime', default="2021-01-26T06:26:10", help="datetime")
+    query_param = vars(parser.parse_args())
 
     # given condition for querying
-    satellite_id = '5fbfecce54ceb10a5664c80a'
-    date_time = "2021-01-26T06:26:10"
+    satellite_id = query_param['id']
+    date_time = query_param['datetime']
 
     # db instance
     alchemy_engine = create_engine('postgresql+psycopg2://postgres:changeme@172.18.0.3/postgres', pool_recycle=3600)
