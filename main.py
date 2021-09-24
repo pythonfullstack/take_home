@@ -50,15 +50,19 @@ if __name__ == '__main__':
         'longitude': query_param['longitude'],
         'latitude': query_param['latitude']
     }
-    date_time = "2021-01-26T06:26:10"
+    date_time = query_param['datetime']
 
+    # define query
     query = f"SELECT * FROM starlink_satellite "
     if date_time is not None:
         query += f"WHERE creation_date='{Utils.iso_8061_to_timestamp(date_time)}'::timestamptz"
 
+    # extract data from database
     data_df = pd.read_sql(query, postgre_SQL_connection)
 
-    data_df = data_df.dropna()
+    # remove rows containing NaN
+    data_df.dropna(inplace=True)
+
     distance_list = []
     for row in data_df.iloc():
         distance_list.append(Utils.calc_distance(row['longitude'], row['latitude'], given_position['longitude'],
