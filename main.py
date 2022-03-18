@@ -1,6 +1,6 @@
 import argparse
 import json
-
+import requests
 import pandas as pd
 from sqlalchemy import create_engine
 
